@@ -19,17 +19,17 @@
 
 	<aside class:light={preferences.theme.scheme === 'light'}>
 		<nav>
-			<a href="https://www.puruvj.dev/blog" use:external> <BlogIcon /> Blog </a>
-			<a href="https://www.puruvj.dev/works" use:external> <WorksIcon /> Works </a>
+			<a href="" use:external> <BlogIcon /> Blog </a>
+			<a href="" use:external> <WorksIcon /> Works </a>
 
 			<hr />
 
-			<a href="https://www.puruvj.dev/twitter" use:external>
+			<a href="" use:external>
 				<TwitterIcon />
 				Twitter
 			</a>
-			<a href="https://www.puruvj.dev/github" use:external> <GithubIcon /> Github </a>
-			<a href="https://www.puruvj.dev/devto" use:external> <DevToIcon /> Dev.to </a>
+			<a href="" use:external> <GithubIcon /> Github </a>
+			<a href="" use:external> <DevToIcon /> Dev.to </a>
 		</nav>
 	</aside>
 
