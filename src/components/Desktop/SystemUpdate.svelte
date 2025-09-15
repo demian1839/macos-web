@@ -56,8 +56,8 @@
 			draggable="false"
 		/>
 
-		<h3>Updates Available</h3>
-		<p>Do you want to restart to install these updates now?</p>
+		<h3>PuriOS Hat ein Neues Update</h3>
+		<p>Möchtest du es Jetzt Installieren?</p>
 
 		<div class="buttons">
 			<button onclick={close}>Later</button>
