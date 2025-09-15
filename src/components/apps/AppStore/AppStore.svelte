@@ -17,7 +17,9 @@
     { id:'alarm',  name:'Oregon Clock', category:'Tools',         rating:4.5, price:'Gratis',           color:'#f59e0b', icon:'⏰' },
     { id:'term',   name:'Terminus',     category:'System',        rating:4.6, price:'Gratis',           color:'#10b981', icon:'>_' },
     { id:'studio', name:'Pixel Studio', category:'Kreativ',       rating:4.6, price:'Gratis', badge:'Neu', color:'#06b6d4', icon:'🎨' },
-    { id:'arena',  name:'Drift Arena',  category:'Spiele',        rating:4.2, price:'Gratis',           color:'#a855f7', icon:'🏁' },
+    { id:'Made by Demian',  name:'Made by Demian',  category:'Spiele',        rating:4.2, price:'Gratis',           color:'#a855f7', icon:'🏁' },
+     { id:'HeyPuri',  name:'HeyPuri',  category:'Spiele',        rating:4.2, price:'Gratis',           color:'#a855f7', icon:'🏁' },
+ { id:'Coming soon',  name:'Coming soon',  category:'Spiele',        rating:4.2, price:'Gratis',           color:'#a855f7', icon:'🏁' },
   ];
 
   // Suche/Filter/Sortierung
