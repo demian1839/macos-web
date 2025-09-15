@@ -52,7 +52,7 @@ const systemPreferences = create_app_config({
 });
 
 const purusTwitter = create_app_config({
-	title: `About the Developer`,
+	title: `Made by Demian`,
 	resizable: true,
 
 	dock_breaks_before: true,
@@ -66,7 +66,7 @@ const viewSource = create_app_config({
 	resizable: true,
 
 	should_open_window: false,
-	external_action: () => window.open('https://github.com/puruvj/macos-web', '_blank'),
+	external_action: () => window.open('', '_blank'),
 });
 
 const vercel = create_app_config({
@@ -75,7 +75,7 @@ const vercel = create_app_config({
 
 	should_open_window: false,
 	external_action: () =>
-		window.open('https://vercel.com/?utm_source=purus-projects&utm_campaign=oss', '_blank'),
+		window.open('oregonhub.netlify.app', '_blank'),
 
 	dock_breaks_before: true,
 });
