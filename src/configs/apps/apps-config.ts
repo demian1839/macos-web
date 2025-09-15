@@ -96,8 +96,7 @@ export const apps_config = {
 
 	// 'system-preferences': systemPreferences,
 
-	'purus-twitter': purusTwitter,
-	'view-source': viewSource,
+	
 
 	vercel,
 };
