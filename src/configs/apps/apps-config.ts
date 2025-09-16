@@ -26,7 +26,7 @@ const calendar = create_app_config({
 });
 
 const vscode = create_app_config({
-	title: 'VSCode',
+	title: 'Untis for PuriOS',
 	resizable: true,
 
 	height: 600,
