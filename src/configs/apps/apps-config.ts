@@ -84,7 +84,7 @@ const appstore = create_app_config({
 	title: 'App Store',
 	resizable: true,
 });
-const HeyPuri = create_app_config({
+const heypuri = create_app_config({
 	title: 'HeyPuri',
 	resizable: true,
 });
@@ -97,7 +97,7 @@ export const apps_config = {
 	vscode,
 	appstore,
 	safari,
-	HeyPuri,
+	heypuri,
 
 	// 'system-preferences': systemPreferences,
 
