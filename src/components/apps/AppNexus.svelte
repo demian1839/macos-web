@@ -34,5 +34,9 @@
 	{#await import('./AppStore/AppStore.svelte') then { default: AppStore }}
 		<AppStore {app_id} />
 	{/await}
+{:else}
+	{#await import('./HeyPuri/HeyPuri.svelte') then { default: HeyPuri }}
+		<HeyPuri {app_id} />
+	{/await}
 
 {/if}
