@@ -88,6 +88,10 @@ const heypuri = create_app_config({
 	title: 'HeyPuri',
 	resizable: true,
 });
+const test = create_app_config({
+	title: 'Test',
+	resizable: true,
+});
 
 export const apps_config = {
 	finder,
