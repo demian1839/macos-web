@@ -3,13 +3,14 @@
   import { tweened } from 'svelte/motion';
   import { cubicOut } from 'svelte/easing';
 
-  // --- 1. Game State (unverändert) ---
+  // --- 1. Game State ---
   let day = 1;
   let money = 100;
   let lemons = 0;
   let sugar = 0;
   let cups = 0;
 
+  // Preise und Kosten
   const LEMON_COST = 0.5;
   const SUGAR_COST = 0.2;
   const CUP_COST = 0.1;
@@ -20,22 +21,20 @@
 
   let message = "Willkommen bei deinem Limonadenstand!";
 
-  // --- 2. Animated Svelte Stores ---
-  // Verwenden wir `tweened` für sanfte Übergänge von Zahlen
+  // --- 2. Animierte Svelte Stores ---
   const animatedMoney = tweened(money, { duration: 500, easing: cubicOut });
   const animatedSales = tweened(0, { duration: 500, easing: cubicOut });
   const animatedLemons = tweened(lemons, { duration: 500, easing: cubicOut });
   const animatedSugar = tweened(sugar, { duration: 500, easing: cubicOut });
   const animatedCups = tweened(cups, { duration: 500, easing: cubicOut });
 
-  // Svelte's reactive statements, um die Stores zu aktualisieren, wenn sich die Variablen ändern
   $: animatedMoney.set(money);
   $: animatedSales.set(salesToday);
   $: animatedLemons.set(lemons);
   $: animatedSugar.set(sugar);
   $: animatedCups.set(cups);
 
-  // --- 3. User Actions (leicht angepasst für die Nachricht) ---
+  // --- 3. Benutzeraktionen ---
   function buyLemons(amount) {
     const cost = amount * LEMON_COST;
     if (money >= cost) {
@@ -86,7 +85,7 @@
     message = `Der Preis pro Limonade ist jetzt $${lemonadePrice.toFixed(2)}.`;
   }
 
-  // --- 4. The Game Loop (unverändert) ---
+  // --- 4. Der Spielzyklus ---
   function nextDay() {
     day++;
     salesToday = 0;
@@ -113,14 +112,14 @@
     }
   }
 
-  // --- 5. Game Initialization (unverändert) ---
+  // --- 5. Spiel-Initialisierung ---
   onMount(() => {
     message = "Willkommen bei deinem Limonadenstand!";
   });
 
   // --- 6. Fortschrittsbalkenlogik ---
-  $: totalInventory = 100; // Maximale Kapazität, kann angepasst werden
-  $: moneyPercentage = (money / 500) * 100; // 500 ist das max-Geld
+  $: totalInventory = 100;
+  $: moneyPercentage = (money / 500) * 100;
   $: lemonsPercentage = (lemons / totalInventory) * 100;
   $: sugarPercentage = (sugar / totalInventory) * 100;
   $: cupsPercentage = (cups / totalInventory) * 100;
@@ -225,6 +224,9 @@
     border-radius: 12px;
     background-color: var(--card-background);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    
+    max-height: 90vh;
+    overflow-y: auto;
   }
 
   h1 {
