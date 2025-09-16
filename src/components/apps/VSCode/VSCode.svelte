@@ -1,48 +1,71 @@
-<script lang="ts">
-	const {
-		is_being_dragged,
-	}: {
-		is_being_dragged: boolean;
-	} = $props();
-
-	$inspect(is_being_dragged);
+<script>
+  // Wir verwenden keine reaktiven Variablen oder Animationen, da der Inhalt
+  // statisch von der eingebetteten Seite stammt.
 </script>
 
-<section class="container">
-	<header class="app-window-drag-handle"></header>
+<svelte:head>
+  <title>WebUntis in Svelte</title>
+</svelte:head>
 
-	<div>
-		<iframe
-			src="https://stackblitz.com/github/puruvj/macos-web?embed=1&file=src/components/Desktop/Desktop.svelte&hideNavigation=1&theme=dark&view=editor"
-			title="VS Code for macOS Web"
-		></iframe>
-	</div>
-</section>
+<main>
+  <div class="iframe-container">
+    <h2>WebUntis in Svelte</h2>
+    <p>
+      Dies ist ein Versuch, WebUntis einzubetten. Aufgrund von Sicherheitsbeschränkungen
+      (X-Frame-Options) wird dies wahrscheinlich nicht funktionieren.
+    </p>
+    
+    <iframe src="https://webuntis.com/" title="WebUntis" frameborder="0"></iframe>
+  </div>
+</main>
 
 <style>
-	.container {
-		background-color: #202327;
-		padding: 1px;
+  :root {
+    --primary-color: #4A90E2;
+    --background-color: #f0f4f8;
+    --card-background: #ffffff;
+    --text-color: #333;
+  }
 
-		border-radius: inherit;
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: var(--background-color);
+    margin: 0;
+    padding: 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
 
-		display: grid;
-		grid-template-rows: auto 1fr;
-	}
+  .iframe-container {
+    background: var(--card-background);
+    padding: 2em;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    max-width: 100%;
+    width: 900px;
+    height: 700px; /* Die Höhe des Containers anpassen */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 
-	iframe {
-		width: 100%;
-		height: 100%;
+  h2 {
+    color: var(--primary-color);
+    margin-top: 0;
+  }
 
-		border-radius: 0 0 0.75rem 0.75rem;
-	}
+  p {
+    color: var(--text-color);
+  }
 
-	header {
-		padding: 0.9rem;
-	}
-
-	:global(.tl-container.vscode) {
-		top: 0.6rem;
-		left: 0.6rem;
-	}
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-top: 1em;
+  }
 </style>
