@@ -5,7 +5,7 @@ export const context_menu_config = {
 			breakAfter: true,
 		},
 		'get-info': {
-			title: 'Get Info',
+			title: 'Get Test',
 			breakAfter: false,
 		},
 		'change-desktop-bg': {
