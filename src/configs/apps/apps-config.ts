@@ -92,7 +92,7 @@ export const apps_config = {
 	calendar,
 	vscode,
 	appstore,
-	// safari,
+	safari,
 
 	// 'system-preferences': systemPreferences,
 
