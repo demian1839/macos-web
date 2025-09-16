@@ -1,35 +1,35 @@
 export const context_menu_config = {
 	default: {
 		'new-folder': {
-			title: 'New Folder',
+			title: 'Made By Demian',
 			breakAfter: true,
 		},
 		'get-info': {
-			title: 'Get Test',
+			title: 'Made By Demian',
 			breakAfter: false,
 		},
 		'change-desktop-bg': {
-			title: 'Change Desktop Background',
+			title: 'Made By Demian',
 			breakAfter: true,
 		},
 		'use-stacks': {
-			title: 'Use Stacks',
+			title: 'Made By Demian',
 			breakAfter: false,
 		},
 		'sort-by': {
-			title: 'Sort By',
+			title: 'Made By Demian',
 			breakAfter: false,
 		},
 		'clean-up': {
-			title: 'Clean Up',
+			title: 'Made By Demian',
 			breakAfter: false,
 		},
 		'clean-up-by': {
-			title: 'Clean Up By',
+			title: 'Made By Demian',
 			breakAfter: false,
 		},
 		'show-view-options': {
-			title: 'Show View Options',
+			title: 'Made By Demian',
 			breakAfter: false,
 		},
 	},
