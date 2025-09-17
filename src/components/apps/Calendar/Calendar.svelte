@@ -1,165 +1,177 @@
 <script>
-  import { writable } from "svelte/store";
+  import { onMount } from "svelte";
 
-  // Store für die Aufgaben Made by Demian
-  const tasks = writable([]);
+  // Woche mit Tagen
+  const days = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"];
 
-  // Input-Variablen
-  let subject = "";
-  let homework = "";
-  let dueDate = "";
+  let weekData = {};
 
-  // Aufgabe hinzufügen
-  function addTask() {
-    if (subject && homework && dueDate) {
-      tasks.update(t => [...t, { subject, homework, dueDate, done: false }]);
-      subject = homework = dueDate = "";
-    }
-  }
+  // beim Laden Daten aus localStorage ziehen
+  onMount(() => {
+    const saved = localStorage.getItem("logbuch");
+    weekData = saved ? JSON.parse(saved) : initWeek();
+  });
 
-  // Aufgabe als erledigt markieren
-  function toggleDone(i) {
-    tasks.update(t => {
-      t[i].done = !t[i].done;
-      return [...t];
+  // Woche initialisieren
+  function initWeek() {
+    let d = {};
+    days.forEach(day => {
+      d[day] = {
+        tasks: [
+          { fach: "", aufgabe: "", done: null },
+          { fach: "", aufgabe: "", done: null },
+          { fach: "", aufgabe: "", done: null }
+        ],
+        extra: ""
+      };
     });
+    d["Noten"] = { fächer: [], notizen: "" };
+    return d;
   }
 
-  // Aufgabe löschen
-  function deleteTask(i) {
-    tasks.update(t => t.filter((_, j) => j !== i));
+  // speichern
+  function save() {
+    localStorage.setItem("logbuch", JSON.stringify(weekData));
+  }
+
+  function toggleTask(day, i, status) {
+    weekData[day].tasks[i].done = status;
+    save();
   }
 </script>
 
-<main>
-  <header class="header">
-    <h1>📘 Hausaufgaben Logbuch</h1>
-  </header>
-
-  <div class="input-box">
-    <input type="text" placeholder="Fach" bind:value={subject} />
-    <input type="text" placeholder="Hausaufgabe" bind:value={homework} />
-    <input type="date" bind:value={dueDate} />
-    <button on:click={addTask}>➕</button>
+<!-- Fenster -->
+<div class="window" on:mousedown|self>
+  <div class="titlebar" id="drag-bar">
+    📘 Hausaufgaben Logbuch
   </div>
 
-  <ul class="task-list">
-    {#each $tasks as task, i}
-      <li class:done={task.done}>
-        <div class="task">
-          <span><b>{task.subject}</b>: {task.homework}</span>
-          <small>Fällig: {task.dueDate}</small>
-        </div>
-        <div class="actions">
-          <button on:click={() => toggleDone(i)}>
-            {task.done ? "✔️" : "⏳"}
-          </button>
-          <button on:click={() => deleteTask(i)}>🗑️</button>
-        </div>
-      </li>
+  <div class="content">
+    {#each days as day}
+      <section>
+        <h2>{day}</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Fach</th>
+              <th>Das nehme ich mir vor</th>
+              <th>✅</th>
+              <th>❌</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#each weekData[day].tasks as task, i}
+              <tr>
+                <td><input type="text" bind:value={task.fach} on:input={save} /></td>
+                <td><input type="text" bind:value={task.aufgabe} on:input={save} /></td>
+                <td>
+                  <input type="radio" name="{day}{i}" checked={task.done === true} 
+                    on:change={() => toggleTask(day,i,true)} />
+                </td>
+                <td>
+                  <input type="radio" name="{day}{i}" checked={task.done === false} 
+                    on:change={() => toggleTask(day,i,false)} />
+                </td>
+              </tr>
+            {/each}
+            <tr>
+              <td colspan="4">
+                <textarea placeholder="Noch zu erledigen..." bind:value={weekData[day].extra} on:input={save}></textarea>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
     {/each}
-  </ul>
-</main>
+
+    <!-- Notenbereich -->
+    <section>
+      <h2>Noten der Woche</h2>
+      <div class="noten">
+        <div class="notenfeld">
+          <textarea placeholder="Fach / Note" bind:value={weekData["Noten"].fächer} on:input={save}></textarea>
+        </div>
+        <div class="notizenfeld">
+          <textarea placeholder="✍️ Notizen..." bind:value={weekData["Noten"].notizen} on:input={save}></textarea>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
 
 <style>
-  main {
-    font-family: "Inter", sans-serif;
-    min-height: 100vh;
-    background: linear-gradient(135deg, #6a00ff, #00a2ff);
-    color: white;
-    padding: 1rem;
-  }
+/* Fenster */
+.window {
+  width: 90%;
+  max-width: 900px;
+  margin: 2rem auto;
+  border-radius: 1.2rem;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(15px);
+  color: white;
+}
 
-  .header {
-    text-align: center;
-    padding: 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 1rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
-  }
+/* Titelbar (zum Verschieben gedacht) */
+.titlebar {
+  background: linear-gradient(135deg, #6a00ff, #00a2ff);
+  padding: 0.8rem 1rem;
+  cursor: move;
+  font-weight: bold;
+  user-select: none;
+}
 
-  .header h1 {
-    margin: 0;
-    font-size: 1.8rem;
-  }
+/* Inhalt */
+.content {
+  padding: 1rem;
+}
 
-  .input-box {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1rem;
-  }
+h2 {
+  margin: 1rem 0 0.5rem;
+  font-size: 1.3rem;
+  border-bottom: 2px solid rgba(255,255,255,0.2);
+  padding-bottom: 0.2rem;
+}
 
-  input {
-    flex: 1;
-    padding: 0.6rem;
-    border-radius: 0.8rem;
-    border: none;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    backdrop-filter: blur(10px);
-  }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+  background: rgba(255,255,255,0.05);
+  border-radius: 0.6rem;
+  overflow: hidden;
+}
 
-  input::placeholder {
-    color: #ddd;
-  }
+th, td {
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 0.5rem;
+  text-align: left;
+}
 
-  button {
-    background: #6a00ff;
-    border: none;
-    border-radius: 0.8rem;
-    color: white;
-    padding: 0.6rem 1rem;
-    cursor: pointer;
-    transition: background 0.2s;
-  }
+input[type="text"], textarea {
+  width: 100%;
+  padding: 0.4rem;
+  border: none;
+  border-radius: 0.4rem;
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
 
-  button:hover {
-    background: #00a2ff;
-  }
+textarea {
+  min-height: 2.5rem;
+  resize: vertical;
+}
 
-  .task-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
+.noten {
+  display: flex;
+  gap: 1rem;
+}
 
-  .task-list li {
-    background: rgba(255, 255, 255, 0.1);
-    margin-bottom: 0.8rem;
-    padding: 0.8rem;
-    border-radius: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    backdrop-filter: blur(12px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-  }
-
-  .task-list li.done {
-    opacity: 0.6;
-    text-decoration: line-through;
-  }
-
-  .actions button {
-    margin-left: 0.4rem;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 1.1rem;
-  }
-
-  .actions button:hover {
-    transform: scale(1.2);
-  }
-
-  .task span {
-    display: block;
-    font-size: 1rem;
-  }
-
-  .task small {
-    font-size: 0.8rem;
-    color: #ddd;
-  }
+.notenfeld, .notizenfeld {
+  flex: 1;
+  background: rgba(255,255,255,0.05);
+  padding: 0.6rem;
+  border-radius: 0.6rem;
+}
 </style>
