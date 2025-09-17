@@ -60,10 +60,7 @@
 
 		background-color: #000;
 
-		:global(svg) {
-			font-size: 100px;
-			color: white;
-		}
+		
 	}
 
 	.progress {
