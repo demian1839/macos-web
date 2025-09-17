@@ -3,28 +3,26 @@
 	import { apps_config } from '🍎/configs/apps/apps-config';
 	import { apps } from '🍎/state/apps.svelte';
 
+	// Immer wenn ein Fenster aktiv wird → Z-Index erhöhen
 	$effect(() => {
 		apps.active;
-
-		untrack(() => (apps.active_z_index += 2));
+		untrack(() => (apps.active_z_index += 1));
 	});
 
-	// Keeps all the app z indices under 50 so they don't go above the UI elements
+	// Clamp: sorgt dafür, dass keine Z-Indices über 50 bleiben
 	$effect(() => {
-		if (!Object.values(apps.z_indices).some((z_index) => z_index > 50)) return;
+		const values = Object.values(apps.z_indices);
+		if (!values.some((z) => z > 50)) return;
 
-		// Get the lowest non-zero z-index
-		const lowest_z_index = Math.min(
-			...[...new Set(Object.values(apps.z_indices))].filter((val) => val !== 0),
-		);
+		// Kleinsten nicht-Null-Z-Index finden
+		const lowest = Math.min(...values.filter((z) => z !== 0));
 
-		untrack(() => (apps.active_z_index -= lowest_z_index));
+		// Alles um (lowest - 10) nach unten verschieben
+		untrack(() => (apps.active_z_index -= lowest - 10));
 
-		const keys = Object.keys(apps.z_indices);
-
-		for (const app of keys) {
-			if (apps.z_indices[app] >= lowest_z_index) {
-				untrack(() => (apps.z_indices[app] -= lowest_z_index));
+		for (const app of Object.keys(apps.z_indices)) {
+			if (apps.z_indices[app] >= lowest) {
+				untrack(() => (apps.z_indices[app] -= lowest - 10));
 			}
 		}
 	});
@@ -41,16 +39,18 @@
 </section>
 
 <style>
-	section {
+	#windows-area {
+		position: absolute;
+		top: 1.7rem;    /* Platz für Header */
+		bottom: 5.25rem; /* Platz für Dock */
+		left: 0;
+		right: 0;
+
+		width: 100%;
+		height: auto;
+
+		overflow: visible; /* Fenster dürfen leicht drüberziehen */
 		display: block;
-
-		/* // 1.7 rem is the heigh of the header
-    // 5.25 rem is the height of dock
-    // top: 1.75rem; */
-		height: 100%;
-
-		width: 100vw;
-
 		justify-self: center;
 	}
 </style>
