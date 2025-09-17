@@ -2,8 +2,7 @@
 	import { onMount } from 'svelte';
 	import { quintInOut } from 'svelte/easing';
 	import { tweened } from 'svelte/motion';
-	import AppleIcon from '/public/app-icons
-/appstore';
+	import AppleIcon from '/public/app-icons/appstore';
 	import { elevation } from '🍎/actions';
 	import { fade_out } from '🍎/helpers/fade.ts';
 	import { sleep } from '🍎/helpers/sleep';
