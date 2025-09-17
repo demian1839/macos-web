@@ -47,6 +47,7 @@
 
 	$effect(() => {
 		apps.active_z_index;
+
 		if (apps.active === app_id) {
 			untrack(() => (apps.z_indices[app_id] = apps.active_z_index));
 		}
@@ -77,15 +78,12 @@
 		if (!is_maximized) {
 			dragging_enabled = false;
 
-			// Transform für Restore speichern
 			minimized_transform = windowEl.style.transform;
+			windowEl.style.transform = `translate(0px, 0px)`;
 
-			// Margin zum Rand (Fenster bleibt sichtbar, kein Fullscreen)
-			const margin = 32; // px Abstand zu allen Seiten
-			windowEl.style.transform = `translate(${margin}px, ${margin}px)`;
-
-			windowEl.style.width = `${window.innerWidth - margin * 2}px`;
-			windowEl.style.height = `${window.innerHeight - margin * 2}px`;
+			windowEl.style.width = `100%`;
+			// windowEl.style.height = 'calc(100vh - 1.7rem - 5.25rem)';
+			windowEl.style.height = 'calc(100vh - 1.7rem)';
 		} else {
 			dragging_enabled = true;
 			windowEl.style.transform = minimized_transform;
@@ -95,9 +93,11 @@
 		}
 
 		is_maximized = !is_maximized;
+
 		apps.fullscreen[app_id] = is_maximized;
 
 		await sleep(300);
+
 		if (!preferences.reduced_motion) windowEl.style.transition = '';
 	}
 
@@ -118,7 +118,7 @@
 	onMount(() => windowEl?.focus());
 </script>
 
-<!-- Fenster -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <section
 	role="application"
 	class="container"
@@ -151,18 +151,24 @@
 	.container {
 		--elevated-shadow: 0px 8.5px 10px rgba(0, 0, 0, 0.115), 0px 68px 80px rgba(0, 0, 0, 0.23);
 
+		width: 100%;
+		height: 100%;
+
 		display: grid;
 		grid-template-rows: 1fr;
 
 		position: absolute;
+
+		will-change: width, height;
+
 		border-radius: 0.75rem;
 		box-shadow: var(--elevated-shadow);
 
 		cursor: var(--system-cursor-default), auto;
 
-		will-change: width, height;
-
 		&.active {
+			/* // --elevated-shadow: 0px 6.7px 12px rgba(0, 0, 0, 0.218), 0px 22.3px 40.2px rgba(0, 0, 0, 0.322),
+      //   0px 100px 180px rgba(0, 0, 0, 0.54); */
 			--elevated-shadow: 0px 8.5px 10px rgba(0, 0, 0, 0.28), 0px 68px 80px rgba(0, 0, 0, 0.56);
 		}
 
@@ -183,6 +189,7 @@
 		top: 1rem;
 		left: 1rem;
 
+		/* // Necessary, as `.container` tries to apply shadow on it */
 		box-shadow: none !important;
 	}
 </style>
