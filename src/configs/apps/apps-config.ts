@@ -41,10 +41,10 @@ const finder = create_app_config({
 	should_open_window: false,
 });
 
-const safari = create_app_config({
-	title: 'Safari',
-	resizable: true,
-});
+// const safari = create_app_config({
+	// title: 'Safari',
+	// resizable: true,
+// });
 
 const systemPreferences = create_app_config({
 	title: 'System Preferences',
