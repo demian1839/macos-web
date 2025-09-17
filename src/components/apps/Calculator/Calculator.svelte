@@ -3,7 +3,7 @@
 </script>
 
 <svelte:head>
-  <title>Made by Demian</title>
+  <title>Made by Demian </title>
 </svelte:head>
 
 <main>
