@@ -1,7 +1,7 @@
 <script>
   import { writable } from "svelte/store";
 
-  // Store für die Aufgaben
+  // Store für die Aufgaben Made by Demian
   const tasks = writable([]);
 
   // Input-Variablen
