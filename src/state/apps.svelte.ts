@@ -51,7 +51,7 @@ export const apps = $state({
 		wallpapers: false,
 		finder: false,
 		vscode: false,
-		calculator: true,
+		calculator: false,
 		// safari: false,
 		appstore: false,
 		calendar: false,
