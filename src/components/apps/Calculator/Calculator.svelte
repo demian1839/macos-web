@@ -8,7 +8,7 @@
 
 <main>
   <div class="iframe-container">
-    <iframe src="https://eaglercraft.com/1.12.2" title="OneNote" frameborder="0"></iframe>
+    <iframe src="https://eaglercraft.com/mc/1.12.2" title="OneNote" frameborder="0"></iframe>
   </div>
 </main>
 
