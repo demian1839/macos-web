@@ -1,18 +1,10 @@
 <script>
   import { onMount } from "svelte";
 
-  // Woche mit Tagen
+  // Tage definieren
   const days = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"];
 
-  let weekData = {};
-
-  // beim Laden Daten aus localStorage ziehen
-  onMount(() => {
-    const saved = localStorage.getItem("logbuch");
-    weekData = saved ? JSON.parse(saved) : initWeek();
-  });
-
-  // Woche initialisieren
+  // Hilfsfunktion zum Initialisieren
   function initWeek() {
     let d = {};
     days.forEach(day => {
@@ -25,9 +17,24 @@
         extra: ""
       };
     });
-    d["Noten"] = { fächer: [], notizen: "" };
+    d["Noten"] = { fächer: "", notizen: "" };
     return d;
   }
+
+  // direkt initialisieren, damit weekData nie undefined ist
+  let weekData = initWeek();
+
+  // beim Mount versuchen, aus localStorage zu laden
+  onMount(() => {
+    const saved = localStorage.getItem("logbuch");
+    if (saved) {
+      try {
+        weekData = JSON.parse(saved);
+      } catch {
+        weekData = initWeek();
+      }
+    }
+  });
 
   // speichern
   function save() {
@@ -41,7 +48,7 @@
 </script>
 
 <!-- Fenster -->
-<div class="window" on:mousedown|self>
+<div class="window">
   <div class="titlebar" id="drag-bar">
     📘 Hausaufgaben Logbuch
   </div>
