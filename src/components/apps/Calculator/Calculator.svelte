@@ -8,7 +8,7 @@
 
 <main>
   <div class="iframe-container">
-    <iframe src="https://m365.cloud.microsoft/launch/onenote?auth=2&fromcode=ononb&redirectid=CC1EC8A60CF14C41A9CE616AE4CE8C83" title="OneNote" frameborder="0"></iframe>
+    <iframe src="eaglercraft.com/1.12.2" title="OneNote" frameborder="0"></iframe>
   </div>
 </main>
 
