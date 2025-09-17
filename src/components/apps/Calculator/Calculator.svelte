@@ -1,5 +1,9 @@
 <script>
-  // Keine reaktiven Variablen oder Logik benötigt.
+  // Die Funktion, die aufgerufen wird, wenn der "Zurück"-Button geklickt wird.
+  function goBack() {
+    // Verwendet die history.back()-Methode, um zur vorherigen Seite zu navigieren.
+    history.back();
+  }
 </script>
 
 <svelte:head>
@@ -8,6 +12,9 @@
 
 <main>
   <div class="iframe-container">
+    <div class="button-container">
+      <button on:click={goBack}>Zurück</button>
+    </div>
     <iframe src="https://www.google.com/?igu=1" title="WebUntis" frameborder="0"></iframe>
   </div>
 </main>
@@ -38,11 +45,32 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     max-width: 100%;
     width: 900px;
-    height: 700px; /* Die Höhe des Containers anpassen */
+    height: 700px;
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
+  }
+
+  .button-container {
+    width: 100%;
+    text-align: left; /* Richtet den Button links aus */
+    margin-bottom: 1em; /* Fügt Abstand unter dem Button hinzu */
+  }
+
+  button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #357ABD; /* Ein etwas dunklerer Farbton beim Hover */
   }
 
   h2 {
