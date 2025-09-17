@@ -11,10 +11,10 @@ const wallpapers = create_app_config({
 });
 
 const calculator = create_app_config({
-	title: 'Calculator',
+	title: 'PuriBrowse',
 
 	expandable: true,
-	resizable: false,
+	resizable: true,
 
 	height: 250 * 1.414,
 	width: 250,
@@ -62,23 +62,14 @@ const purusTwitter = create_app_config({
 });
 
 const viewSource = create_app_config({
-	title: `View Source`,
+	title: `Made by Demian`,
 	resizable: true,
 
 	should_open_window: false,
 	external_action: () => window.open('', '_blank'),
 });
 
-const vercel = create_app_config({
-	title: `Powered by Vercel`,
-	resizable: true,
 
-	should_open_window: false,
-	external_action: () =>
-		window.open('oregonhub.netlify.app', '_blank'),
-
-	dock_breaks_before: true,
-});
 
 const appstore = create_app_config({
 	title: 'App Store',
@@ -88,10 +79,7 @@ const heypuri = create_app_config({
 	title: 'HeyPuri',
 	resizable: true,
 });
-const test = create_app_config({
-	title: 'Test',
-	resizable: true,
-});
+
 
 export const apps_config = {
 	finder,
@@ -100,12 +88,12 @@ export const apps_config = {
 	calendar,
 	vscode,
 	appstore,
-	safari,
+	// safari,
 	heypuri,
 
 	// 'system-preferences': systemPreferences,
 
 	
 
-	vercel,
+	
 };
