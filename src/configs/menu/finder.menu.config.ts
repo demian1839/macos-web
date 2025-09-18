@@ -2,28 +2,28 @@ import { create_menu_config } from '🍎/helpers/create-menu-config';
 
 export const finder_menu_config = create_menu_config({
 	default: {
-		title: 'Finder',
+		title: 'PuriOS Help',
 		menu: {
 			'about-finder': {
-				title: 'About Finder',
+				title: 'Made by Demian',
 				breakAfter: true,
 			},
 			preferences: {
-				title: 'Preferences',
+				title: 'MBD',
 				breakAfter: true,
 			},
 			'empty-trash': {
-				title: 'Empty Trash',
+				title: 'MBD',
 				breakAfter: true,
 			},
 			'hide-finder': {
-				title: 'Hide Finder',
+				title: 'MBD',
 			},
 			'hide-others': {
-				title: 'Hide Others',
+				title: 'MBD',
 			},
 			'show-all': {
-				title: 'Show All',
+				title: 'MBD',
 				disabled: true,
 			},
 		},
@@ -372,14 +372,14 @@ export const finder_menu_config = create_menu_config({
 	},
 
 	help: {
-		title: 'Help',
+		title: 'This OS Is Fully Made by Demian',
 		menu: {
 			'send-finder-feedback': {
-				title: 'Send Finder Feedback',
+				title: 'Send Dev A Feedback',
 				breakAfter: true,
 			},
 			'macos-help': {
-				title: 'macOS Help',
+				title: 'PuriOS Help',
 			},
 		},
 	},
