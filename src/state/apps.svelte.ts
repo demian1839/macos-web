@@ -5,7 +5,7 @@ export type AppID = keyof typeof apps_config;
 export const apps = $state({
 	open: {
 		wallpapers: false,
-		finder: true,
+		finder: false,
 		vscode: false,
 		calculator: false,
 		// safari: false,
