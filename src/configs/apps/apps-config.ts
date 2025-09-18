@@ -1,7 +1,7 @@
 import { create_app_config } from '🍎/helpers/create-app-config.ts';
 
 const wallpapers = create_app_config({
-	title: 'Wallpapers',
+	title: 'Hintergrund',
 	resizable: true,
 
 	height: 600,
@@ -21,7 +21,7 @@ const calculator = create_app_config({
 });
 
 const calendar = create_app_config({
-	title: 'Calendar',
+	title: 'Logbuch',
 	resizable: true,
 });
 
@@ -34,7 +34,7 @@ const vscode = create_app_config({
 });
 
 const finder = create_app_config({
-	title: 'Finder',
+	title: 'Send Feedback',
 	resizable: true,
 
 	// dockBreaksBefore: true,
@@ -82,7 +82,7 @@ const heypuri = create_app_config({
 
 
 export const apps_config = {
-	finder,
+	
 	wallpapers,
 	calculator,
 	calendar,
