@@ -19,7 +19,7 @@
 	// Animation sequence when the component mounts
 	onMount(async () => {
 		// Start the sequence
-		showLogo = true;
+		showLogo = false;
 		await sleep(700); // Wait for logo animation
 
 		showText = true;
