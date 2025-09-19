@@ -8,8 +8,9 @@
   // #      DATENSTRUKTUR & LOGIK    #
   // #################################
 
-  let weekData = {}; // Daten für die aktuelle Woche (Hausaufgaben, Noten)
-  let timetableData = {}; // Daten für den Stundenplan
+  // Daten direkt mit der leeren Struktur initialisieren, um Fehler zu vermeiden
+  let weekData = initWeek(); 
+  let timetableData = initTimetable();
   
   let currentDate = new Date();
   let currentYear;
