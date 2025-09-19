@@ -1,184 +1,397 @@
 <script>
   import { onMount } from "svelte";
 
-  // Tage definieren
+  // Tage der Woche
   const days = ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag"];
 
-  // Hilfsfunktion zum Initialisieren
+  // #################################
+  // #      DATENSTRUKTUR & LOGIK    #
+  // #################################
+
+  let weekData = {}; // Daten für die aktuelle Woche (Hausaufgaben, Noten)
+  let timetableData = {}; // Daten für den Stundenplan
+  
+  let currentDate = new Date();
+  let currentYear;
+  let currentWeekNumber;
+
+  // Hilfsfunktion: Eine leere Wochenstruktur erstellen
   function initWeek() {
-    let d = {};
+    let newWeek = {};
     days.forEach(day => {
-      d[day] = {
-        tasks: [
-          { fach: "", aufgabe: "", done: null },
-          { fach: "", aufgabe: "", done: null },
-          { fach: "", aufgabe: "", done: null }
-        ],
+      newWeek[day] = {
+        tasks: [], // Leere Aufgabenliste
         extra: ""
       };
     });
-    d["Noten"] = { fächer: "", notizen: "" };
-    return d;
+    newWeek["Noten"] = { fächer: "", notizen: "" };
+    return newWeek;
   }
 
-  // direkt initialisieren, damit weekData nie undefined ist
-  let weekData = initWeek();
+  // Hilfsfunktion: Einen leeren Stundenplan erstellen
+  function initTimetable() {
+    let newTimetable = {};
+    days.forEach(day => {
+      newTimetable[day] = Array(8).fill(""); // 8 Schulstunden
+    });
+    return newTimetable;
+  }
 
-  // beim Mount versuchen, aus localStorage zu laden
+  // #################################
+  // #      WOCHEN-MANAGEMENT        #
+  // #################################
+  
+  // Funktion zum Ermitteln der ISO-Kalenderwoche
+  function getWeekNumber(date) {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+  }
+
+  // Aktualisiert die Anzeige und lädt die Daten für die aktuelle Woche
+  function updateAndLoadWeek() {
+    currentYear = currentDate.getFullYear();
+    currentWeekNumber = getWeekNumber(currentDate);
+    loadData();
+  }
+
+  function changeWeek(direction) {
+    currentDate.setDate(currentDate.getDate() + 7 * direction);
+    updateAndLoadWeek();
+  }
+
+  // #################################
+  // #      SPEICHERN & LADEN        #
+  // #################################
+
+  // Lädt Wochen- und Stundenplandaten aus dem localStorage
+  function loadData() {
+    const weekKey = `logbuch-${currentYear}-${currentWeekNumber}`;
+    const savedWeek = localStorage.getItem(weekKey);
+    weekData = savedWeek ? JSON.parse(savedWeek) : initWeek();
+
+    const savedTimetable = localStorage.getItem("stundenplan");
+    timetableData = savedTimetable ? JSON.parse(savedTimetable) : initTimetable();
+  }
+
+  // Speichert die aktuellen Daten im localStorage
+  function saveData() {
+    const weekKey = `logbuch-${currentYear}-${currentWeekNumber}`;
+    localStorage.setItem(weekKey, JSON.stringify(weekData));
+    localStorage.setItem("stundenplan", JSON.stringify(timetableData));
+    
+    // Erzwingt eine Aktualisierung der UI nach dem Speichern
+    weekData = weekData; 
+    timetableData = timetableData;
+  }
+
+  // onMount: Wird ausgeführt, wenn die Komponente geladen wird
   onMount(() => {
-    const saved = localStorage.getItem("logbuch");
-    if (saved) {
-      try {
-        weekData = JSON.parse(saved);
-      } catch {
-        weekData = initWeek();
-      }
-    }
+    updateAndLoadWeek();
   });
 
-  // speichern
-  function save() {
-    localStorage.setItem("logbuch", JSON.stringify(weekData));
+  // #################################
+  // #      AUFGABEN-FUNKTIONEN      #
+  // #################################
+
+  function addTask(day) {
+    weekData[day].tasks.push({ fach: "", aufgabe: "", done: false });
+    saveData();
   }
 
-  function toggleTask(day, i, status) {
-    weekData[day].tasks[i].done = status;
-    save();
+  function removeTask(day, index) {
+    weekData[day].tasks.splice(index, 1);
+    saveData();
   }
+
+  function resetCurrentWeek() {
+    if (confirm("Möchtest du wirklich alle Aufgaben und Notizen für diese Woche löschen?")) {
+        weekData = initWeek();
+        saveData();
+    }
+  }
+
 </script>
 
-<!-- Fenster -->
-<div class="window">
-  <div class="titlebar" id="drag-bar">
-    📘 Hausaufgaben Logbuch
-  </div>
+<div class="app-container">
+  <header>
+    <h1>📘 Logbuch</h1>
+    <div class="week-navigator">
+      <button on:click={() => changeWeek(-1)}>‹ Vorherige</button>
+      <span>KW {currentWeekNumber} / {currentYear}</span>
+      <button on:click={() => changeWeek(1)}>Nächste ›</button>
+    </div>
+  </header>
 
-  <div class="content">
-    {#each days as day}
-      <section>
-        <h2>{day}</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Fach</th>
-              <th>Das nehme ich mir vor</th>
-              <th>✅</th>
-              <th>❌</th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each weekData[day].tasks as task, i}
-              <tr>
-                <td><input type="text" bind:value={task.fach} on:input={save} /></td>
-                <td><input type="text" bind:value={task.aufgabe} on:input={save} /></td>
-                <td>
-                  <input type="radio" name="{day}{i}" checked={task.done === true} 
-                    on:change={() => toggleTask(day,i,true)} />
-                </td>
-                <td>
-                  <input type="radio" name="{day}{i}" checked={task.done === false} 
-                    on:change={() => toggleTask(day,i,false)} />
-                </td>
-              </tr>
+  <main class="main-grid">
+    <div class="tasks-column">
+      {#each days as day}
+        <section class="day-card">
+          <h2>{day}</h2>
+          <div class="tasks-list">
+            {#each weekData[day]?.tasks || [] as task, i}
+              <div class="task-item" class:done={task.done}>
+                <input type="checkbox" bind:checked={task.done} on:change={saveData} title="Erledigt?">
+                <input class="fach-input" type="text" placeholder="Fach" bind:value={task.fach} on:blur={saveData}>
+                <input class="aufgabe-input" type="text" placeholder="Meine Aufgabe..." bind:value={task.aufgabe} on:blur={saveData}>
+                <button class="remove-btn" on:click={() => removeTask(day, i)} title="Aufgabe löschen">🗑️</button>
+              </div>
             {/each}
-            <tr>
-              <td colspan="4">
-                <textarea placeholder="Noch zu erledigen..." bind:value={weekData[day].extra} on:input={save}></textarea>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-    {/each}
+          </div>
+          <button class="add-btn" on:click={() => addTask(day)}>+ Aufgabe hinzufügen</button>
+          <textarea placeholder="Zusätzliche Notizen für {day}..." bind:value={weekData[day].extra} on:blur={saveData}></textarea>
+        </section>
+      {/each}
+    </div>
+    
+    <div class="sidebar-column">
+        <section class="sidebar-card">
+            <h2>🗓️ Stundenplan</h2>
+            <table class="timetable">
+                <thead>
+                    <tr>
+                        <th>Std.</th>
+                        {#each days as day}
+                            <th>{day.substring(0,2)}</th>
+                        {/each}
+                    </tr>
+                </thead>
+                <tbody>
+                    {#each Array(8) as _, i}
+                        <tr>
+                            <td>{i + 1}.</td>
+                            {#each days as day}
+                                <td><input type="text" bind:value={timetableData[day][i]} on:blur={saveData}></td>
+                            {/each}
+                        </tr>
+                    {/each}
+                </tbody>
+            </table>
+        </section>
 
-    <!-- Notenbereich -->
-    <section>
-      <h2>Noten der Woche</h2>
-      <div class="noten">
-        <div class="notenfeld">
-          <textarea placeholder="Fach / Note" bind:value={weekData["Noten"].fächer} on:input={save}></textarea>
-        </div>
-        <div class="notizenfeld">
-          <textarea placeholder="✍️ Notizen..." bind:value={weekData["Noten"].notizen} on:input={save}></textarea>
-        </div>
-      </div>
-    </section>
-  </div>
+        <section class="sidebar-card">
+            <h2>📝 Noten & Notizen</h2>
+            <div class="noten-grid">
+                <textarea placeholder="Fach & Note (z.B. Mathe: 2+)" bind:value={weekData['Noten'].fächer} on:blur={saveData}></textarea>
+                <textarea placeholder="Allgemeine Notizen zur Woche..." bind:value={weekData['Noten'].notizen} on:blur={saveData}></textarea>
+            </div>
+        </section>
+
+        <section class="sidebar-card actions">
+            <h2>⚙️ Aktionen</h2>
+            <button class="reset-btn" on:click={resetCurrentWeek}>Aktuelle Woche zurücksetzen</button>
+        </section>
+    </div>
+  </main>
 </div>
 
 <style>
-/* Fenster */
-.window {
-  width: 90%;
-  max-width: 900px;
-  margin: 2rem auto;
-  border-radius: 1.2rem;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(15px);
-  color: white;
-}
+  :root {
+    --bg-color: #1a1a2e;
+    --card-color: #16213e;
+    --primary-color: #0f3460;
+    --accent-color: #e94560;
+    --text-color: #e0e0e0;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --done-opacity: 0.5;
+  }
 
-/* Titelbar (zum Verschieben gedacht) */
-.titlebar {
-  background: linear-gradient(135deg, #6a00ff, #00a2ff);
-  padding: 0.8rem 1rem;
-  cursor: move;
-  font-weight: bold;
-  user-select: none;
-}
+  .app-container {
+    width: 95%;
+    max-width: 1400px;
+    margin: 2rem auto;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: var(--text-color);
+  }
 
-/* Inhalt */
-.content {
-  padding: 1rem;
-}
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 0 1rem;
+  }
 
-h2 {
-  margin: 1rem 0 0.5rem;
-  font-size: 1.3rem;
-  border-bottom: 2px solid rgba(255,255,255,0.2);
-  padding-bottom: 0.2rem;
-}
+  h1 {
+    font-size: 2.5rem;
+    color: white;
+  }
+  
+  h2 {
+    margin-top: 0;
+    color: white;
+    border-bottom: 2px solid var(--accent-color);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .week-navigator {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--primary-color);
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+  }
 
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 1rem;
-  background: rgba(255,255,255,0.05);
-  border-radius: 0.6rem;
-  overflow: hidden;
-}
+  .week-navigator span {
+    font-weight: 500;
+    min-width: 120px;
+    text-align: center;
+  }
 
-th, td {
-  border: 1px solid rgba(255,255,255,0.1);
-  padding: 0.5rem;
-  text-align: left;
-}
+  .main-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+  }
 
-input[type="text"], textarea {
-  width: 100%;
-  padding: 0.4rem;
-  border: none;
-  border-radius: 0.4rem;
-  background: rgba(255,255,255,0.1);
-  color: white;
-}
+  .day-card, .sidebar-card {
+    background: var(--card-color);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  }
+  
+  .day-card:not(:last-child) {
+    margin-bottom: 2rem;
+  }
+  
+  .sidebar-card:not(:last-child) {
+    margin-bottom: 2rem;
+  }
 
-textarea {
-  min-height: 2.5rem;
-  resize: vertical;
-}
+  .task-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    transition: opacity 0.3s ease;
+  }
+  
+  .task-item.done {
+    opacity: var(--done-opacity);
+  }
+  
+  .task-item.done .aufgabe-input,
+  .task-item.done .fach-input {
+      text-decoration: line-through;
+  }
 
-.noten {
-  display: flex;
-  gap: 1rem;
-}
+  input[type="text"], textarea {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    background: var(--primary-color);
+    color: var(--text-color);
+    font-size: 1rem;
+  }
+  
+  input[type="text"]:focus, textarea:focus {
+      outline: none;
+      border-color: var(--accent-color);
+  }
+  
+  input[type="checkbox"] {
+      min-width: 20px;
+      height: 20px;
+      cursor: pointer;
+  }
 
-.notenfeld, .notizenfeld {
-  flex: 1;
-  background: rgba(255,255,255,0.05);
-  padding: 0.6rem;
-  border-radius: 0.6rem;
-}
+  .fach-input { flex-basis: 25%; }
+  .aufgabe-input { flex-basis: 75%; }
+  
+  button {
+    background: var(--primary-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.6rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+  }
+  
+  button:hover {
+    background-color: #1e457c;
+  }
+  
+  button:active {
+      transform: scale(0.98);
+  }
+
+  .add-btn {
+    width: 100%;
+    margin: 0.5rem 0 1rem 0;
+    background-color: rgba(233, 69, 96, 0.2);
+    border-color: var(--accent-color);
+  }
+  
+  .add-btn:hover {
+      background-color: rgba(233, 69, 96, 0.4);
+  }
+
+  .remove-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    padding: 0.2rem;
+    opacity: 0.6;
+  }
+  
+  .remove-btn:hover {
+      opacity: 1;
+      color: var(--accent-color);
+  }
+  
+  .reset-btn {
+    width: 100%;
+    background-color: var(--accent-color);
+    border: none;
+    color: white;
+  }
+  
+  .reset-btn:hover {
+      background-color: #d43d51;
+  }
+  
+  .timetable {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: center;
+  }
+  .timetable th { padding-bottom: 0.5rem; }
+  .timetable td { padding: 0.1rem; }
+  .timetable input { padding: 0.4rem; text-align: center; }
+
+  .noten-grid {
+      display: grid;
+      gap: 1rem;
+  }
+  
+  textarea {
+      min-height: 80px;
+      resize: vertical;
+  }
+
+  /* Responsive Design für kleinere Bildschirme */
+  @media (max-width: 1024px) {
+    .main-grid {
+      grid-template-columns: 1fr;
+    }
+    .tasks-column { order: 2; }
+    .sidebar-column { order: 1; }
+  }
+  
+  @media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    h1 { font-size: 2rem; }
+  }
 </style>
